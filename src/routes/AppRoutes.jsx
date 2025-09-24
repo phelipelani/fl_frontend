@@ -11,30 +11,31 @@ import ResultadoRodadaPage from '../pages/ResultadoRodadaPage';
 import EstatisticasPage from '../pages/EstatisticasPage';
 import LoginPage from '../pages/LoginPage';
 import MainLayout from '../components/layout/MainLayout';
-import ProtectedRoute from './ProtectedRoute'; // 1. Importar o nosso protetor
+import ProtectedRoute from './ProtectedRoute';
 
 const AppRoutes = () => {
   return (
     <Routes>
-      {/* Rotas Públicas */}
+      {/* Rotas Públicas (não exigem login) */}
       <Route path="/" element={<HomePage />} />
       <Route path="/login" element={<LoginPage />} />
       
-      {/* 2. Envolvemos as rotas protegidas com o ProtectedRoute */}
+      {/* A ROTA DE ESTATÍSTICAS AGORA É PÚBLICA E USA O LAYOUT PRINCIPAL */}
+      <Route element={<MainLayout />}>
+        <Route path="/estatisticas" element={<EstatisticasPage />} />
+      </Route>
+      
+      {/* Rotas Protegidas (exigem login) */}
       <Route element={<ProtectedRoute />}>
-        {/* Todas as rotas aqui dentro agora exigem login */}
-        
         <Route element={<MainLayout />}>
           <Route path="/ligas" element={<LigasPage />} />
           <Route path="/liga/:ligaId" element={<LigaDetailPage />} />
           <Route path="/liga/:ligaId/rodada/:rodadaId" element={<RodadaPage />} />
-          <Route path="/estatisticas" element={<EstatisticasPage />} />
         </Route>
 
         <Route path="/liga/:ligaId/rodada/:rodadaId/sorteio" element={<SorteioPage />} />
         <Route path="/liga/:ligaId/rodada/:rodadaId/partidas" element={<PartidasPage />} />
         <Route path="/liga/:ligaId/rodada/:rodadaId/resultados" element={<ResultadoRodadaPage />} />
-
       </Route>
     </Routes>
   );
