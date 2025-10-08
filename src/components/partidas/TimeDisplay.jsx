@@ -60,6 +60,7 @@ const JogadorRow = styled(motion.div)`
   transition: all 0.2s ease !important;
   min-height: 24px !important;
   font-size: 10px !important;
+      height: 16%;
 
   &:hover {
     background-color: rgba(0, 0, 0, 0.3) !important;
