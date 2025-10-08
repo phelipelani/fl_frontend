@@ -948,3 +948,4 @@ const EstatisticasPage = () => {
 };
 
 export default EstatisticasPage;
+
