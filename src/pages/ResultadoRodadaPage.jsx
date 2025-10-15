@@ -1,204 +1,63 @@
-// import React, { useState, useEffect } from 'react';
-// import { useParams } from 'react-router-dom';
-// import styled from 'styled-components';
-// import { getResultadosDaRodada } from '../services/api';
-// import BackButton from '../components/common/BackButton';
-
-// const PageContainer = styled.div`
-//     width: 100%;
-//     min-height: 100vh;
-//     padding: 40px;
-//     display: flex;
-//     flex-direction: column;
-//     align-items: center;
-// `;
-
-// const Header = styled.div`
-//     width: 100%;
-//     max-width: 1200px;
-//     text-align: center;
-//     margin-bottom: 40px;
-// `;
-
-// const Title = styled.h1`
-//     font-family: 'Oswald', sans-serif;
-//     font-size: 3rem;
-//     color: #e6f1ff;
-//     text-transform: uppercase;
-// `;
-
-// const KpiGrid = styled.div`
-//     display: grid;
-//     grid-template-columns: repeat(2, 1fr);
-//     gap: 20px;
-//     width: 100%;
-//     max-width: 1000px;
-//     margin-bottom: 40px;
-
-//     @media (min-width: 768px) {
-//         grid-template-columns: repeat(4, 1fr);
-//     }
-// `;
-
-// const KpiCard = styled.div`
-//     background-color: rgba(10, 25, 47, 0.8);
-//     padding: 20px;
-//     border-radius: 8px;
-//     text-align: center;
-//     border-left: 4px solid #facc15;
-// `;
-
-// const KpiTitle = styled.p`
-//     color: #94a3b8;
-//     font-size: 0.9rem;
-//     margin-bottom: 5px;
-// `;
-
-// const KpiValue = styled.p`
-//     font-size: 1.5rem;
-//     font-weight: bold;
-//     color: #facc15;
-// `;
-
-// const TabelasContainer = styled.div`
-//     display: grid;
-//     grid-template-columns: 1fr;
-//     gap: 30px;
-//     width: 100%;
-//     max-width: 1200px;
-
-//     @media (min-width: 1024px) {
-//         grid-template-columns: repeat(3, 1fr);
-//     }
-// `;
-
-// const Tabela = styled.div`
-//     background-color: rgba(10, 25, 47, 0.8);
-//     border-radius: 8px;
-//     overflow: hidden;
-// `;
-
-// const TabelaHeader = styled.h3`
-//     background-color: #1e293b;
-//     padding: 15px;
-//     text-align: center;
-//     font-size: 1.2rem;
-//     font-weight: bold;
-// `;
-
-// const TabelaRow = styled.div`
-//     display: flex;
-//     justify-content: space-between;
-//     padding: 12px 15px;
-//     border-bottom: 1px solid #1e293b;
-
-//     &:last-child {
-//         border-bottom: none;
-//     }
-
-//     &.rank-1 {
-//         background-color: rgba(250, 204, 21, 0.2);
-//         font-weight: bold;
-//     }
-//     &.rank-last {
-//         background-color: rgba(239, 68, 68, 0.2);
-//     }
-// `;
-
-// const ResultadoRodadaPage = () => {
-//     const { rodadaId } = useParams();
-//     const [stats, setStats] = useState([]);
-//     const [loading, setLoading] = useState(true);
-
-//     useEffect(() => {
-//         const fetchStats = async () => {
-//             setLoading(true);
-//             const data = await getResultadosDaRodada(rodadaId);
-//             setStats(data);
-//             setLoading(false);
-//         };
-//         fetchStats();
-//     }, [rodadaId]);
-
-//     if (loading) {
-//         return <PageContainer><Title>A carregar estatísticas...</Title></PageContainer>;
-//     }
-
-//     const mvp = stats[0];
-//     const peDeRato = stats[stats.length - 1];
-//     const artilheiro = [...stats].sort((a, b) => b.gols - a.gols)[0];
-//     const assistente = [...stats].sort((a, b) => b.assistencias - a.assistencias)[0];
-
-//     return (
-//         <PageContainer>
-//             <Header>
-//                 <Title>Painel de Estatísticas</Title>
-//             </Header>
-
-//             <KpiGrid>
-//                 <KpiCard><KpiTitle>MVP DA RODADA</KpiTitle><KpiValue>{mvp?.nome || '-'}</KpiValue></KpiCard>
-//                 <KpiCard><KpiTitle>Pé de Rato</KpiTitle><KpiValue>{peDeRato?.nome || '-'}</KpiValue></KpiCard>
-//                 <KpiCard><KpiTitle>Artilheiro</KpiTitle><KpiValue>{artilheiro?.nome} ({artilheiro?.gols})</KpiValue></KpiCard>
-//                 <KpiCard><KpiTitle>Maior Assistente</KpiTitle><KpiValue>{assistente?.nome} ({assistente?.assistencias})</KpiValue></KpiCard>
-//             </KpiGrid>
-            
-//             <TabelasContainer>
-//                 <Tabela>
-//                     <TabelaHeader>TABELA PONTOS</TabelaHeader>
-//                     {stats.map((j, i) => (
-//                         <TabelaRow key={j.id} className={i === 0 ? 'rank-1' : i === stats.length - 1 ? 'rank-last' : ''}>
-//                             <span>{i + 1}. {j.nome}</span>
-//                             <strong>{j.total_pontos}</strong>
-//                         </TabelaRow>
-//                     ))}
-//                 </Tabela>
-//                  <Tabela>
-//                     <TabelaHeader>TABELA DE GOLS</TabelaHeader>
-//                     {[...stats].sort((a, b) => b.gols - a.gols).map((j, i) => (
-//                         <TabelaRow key={j.id} className={i === 0 ? 'rank-1' : ''}>
-//                             <span>{i + 1}. {j.nome}</span>
-//                             <strong>{j.gols}</strong>
-//                         </TabelaRow>
-//                     ))}
-//                 </Tabela>
-//                  <Tabela>
-//                     <TabelaHeader>TABELA DE ASSISTÊNCIAS</TabelaHeader>
-//                     {[...stats].sort((a, b) => b.assistencias - a.assistencias).map((j, i) => (
-//                         <TabelaRow key={j.id} className={i === 0 ? 'rank-1' : ''}>
-//                             <span>{i + 1}. {j.nome}</span>
-//                             <strong>{j.assistencias}</strong>
-//                         </TabelaRow>
-//                     ))}
-//                 </Tabela>
-//             </TabelasContainer>
-
-//             <BackButton />
-//         </PageContainer>
-//     );
-// };
-
-// export default ResultadoRodadaPage;
-
 import React, { useEffect, useMemo, useState } from "react";
-import { getEstatisticas, getLigas } from "../services/api";
+// Importa o Link para navegação
+import { useParams, Link } from "react-router-dom";
+import { getRodadasPorLiga, getResultadosDaRodada } from "../services/api";
+
 import styled from "styled-components";
 
-// ========== STYLED COMPONENTS ==========
+// ========== BOTÃO VOLTAR (NOVO) ==========
+const HomeButton = styled(Link)`
+  position: absolute;
+  top: 25px;
+  right: 40px;
+  z-index: 20; // Garante que fique sobre outros elementos
+  background: rgba(8, 20, 33, 0.85);
+  color: #e2e8f0;
+  border: 1px solid rgba(56, 189, 248, 0.3);
+  border-radius: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: all 0.2s;
+
+  &:hover {
+    background: rgba(12, 30, 49, 0.95);
+    border-color: rgba(56, 189, 248, 0.5);
+    transform: translateY(-2px);
+  }
+
+  @media (max-width: 768px) {
+    top: 15px;
+    right: 15px;
+    padding: 0.5rem 1rem;
+  }
+`;
+
+// ========== STYLED COMPONENTS (sem alterações) ==========
 const PageContainer = styled.main`
   position: relative;
   min-height: 100vh;
   overflow-x: hidden;
   background: #030611;
-  color: #ECF3FF;
+  color: #ecf3ff;
 `;
 
 const BackgroundGradients = styled.div`
   pointer-events: none;
   position: absolute;
   inset: 0;
-  background: radial-gradient(circle at 15% 20%, rgba(59,130,246,0.22), transparent 55%),
-              radial-gradient(circle at 85% 10%, rgba(249,115,22,0.18), transparent 52%),
-              linear-gradient(135deg, #030611 0%, #071626 45%, #032116 100%);
+  background: radial-gradient(
+      circle at 15% 20%,
+      rgba(59, 130, 246, 0.22),
+      transparent 55%
+    ),
+    radial-gradient(
+      circle at 85% 10%,
+      rgba(249, 115, 22, 0.18),
+      transparent 52%
+    ),
+    linear-gradient(135deg, #030611 0%, #071626 45%, #032116 100%);
 `;
 
 const OverlayGradient = styled.div`
@@ -207,7 +66,11 @@ const OverlayGradient = styled.div`
   inset: 0;
   mix-blend-mode: screen;
   opacity: 0.6;
-  background: radial-gradient(circle at 50% 120%, rgba(34,197,94,0.18), rgba(2,10,14,0.05) 60%);
+  background: radial-gradient(
+    circle at 50% 120%,
+    rgba(34, 197, 94, 0.18),
+    rgba(2, 10, 14, 0.05) 60%
+  );
 `;
 
 const ContentWrapper = styled.div`
@@ -215,7 +78,8 @@ const ContentWrapper = styled.div`
   z-index: 10;
   max-width: 1536px;
   margin: 0 auto;
-  padding: clamp(1rem, 3vw, 4rem) clamp(1rem, 3vw, 1.5rem) clamp(2rem, 5vw, 5rem);
+  padding: clamp(1rem, 3vw, 4rem) clamp(1rem, 3vw, 1.5rem)
+    clamp(2rem, 5vw, 5rem);
 
   @media (max-width: 768px) {
     padding: 1rem 1rem 2rem;
@@ -244,7 +108,7 @@ const Title = styled.h1`
   font-size: clamp(1.5rem, 5vw, 3rem);
   font-weight: 600;
   line-height: 1.2;
-  color: #F8FAFC;
+  color: #f8fafc;
 
   @media (max-width: 768px) {
     font-size: 1.75rem;
@@ -278,13 +142,13 @@ const FilterSection = styled.section`
 
 const FilterLabel = styled.label`
   font-size: clamp(0.875rem, 2vw, 1rem);
-  color: #CBD5E1;
+  color: #cbd5e1;
   font-weight: 500;
 `;
 
 const FilterSelect = styled.select`
   background: rgba(8, 20, 33, 0.85);
-  color: #E2E8F0;
+  color: #e2e8f0;
   border: 1px solid rgba(56, 189, 248, 0.3);
   border-radius: 0.5rem;
   padding: clamp(0.5rem, 2vw, 0.75rem) clamp(0.75rem, 3vw, 1rem);
@@ -298,7 +162,7 @@ const FilterSelect = styled.select`
 
   &:focus {
     outline: none;
-    border-color: #38BDF8;
+    border-color: #38bdf8;
     box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.1);
   }
 
@@ -326,22 +190,25 @@ const HighlightCard = styled.article`
   gap: clamp(0.75rem, 2vw, 1.25rem);
   overflow: hidden;
   border-radius: 1.5rem;
-  border: 1px solid ${props => props.borderColor || 'rgba(19, 38, 58, 0.7)'};
+  border: 1px solid ${(props) => props.borderColor || "rgba(19, 38, 58, 0.7)"};
   background: rgba(8, 20, 33, 0.85);
   padding: clamp(1rem, 3vw, 1.5rem);
   backdrop-filter: blur(18px);
   transition: all 0.3s ease-out;
-  box-shadow: ${props => props.active ? `0 24px 60px -28px ${props.shadowColor || 'rgba(15, 118, 110, 0.8)'}` : 'none'};
+  box-shadow: ${(props) =>
+    props.active
+      ? `0 24px 60px -28px ${props.shadowColor || "rgba(15, 118, 110, 0.8)"}`
+      : "none"};
 
   &:hover {
     transform: translateY(-0.5rem);
     border-opacity: 0.95;
-    box-shadow: 0 24px 60px -28px ${props => props.shadowColor || 'rgba(15, 118, 110, 0.8)'};
+    box-shadow: 0 24px 60px -28px ${(props) => props.shadowColor || "rgba(15, 118, 110, 0.8)"};
   }
 
   @media (max-width: 768px) {
     padding: 1.25rem;
-    
+
     &:hover {
       transform: translateY(-0.25rem);
     }
@@ -351,8 +218,12 @@ const HighlightCard = styled.article`
 const CardGradient = styled.div`
   position: absolute;
   inset: 0;
-  background: linear-gradient(to bottom right, ${props => props.gradient || 'rgba(15, 118, 110, 0.35)'}, transparent);
-  opacity: ${props => props.active ? '1' : '0'};
+  background: linear-gradient(
+    to bottom right,
+    ${(props) => props.gradient || "rgba(15, 118, 110, 0.35)"},
+    transparent
+  );
+  opacity: ${(props) => (props.active ? "1" : "0")};
   transition: opacity 0.5s;
 `;
 
@@ -382,8 +253,8 @@ const CardTitle = styled.h2`
   font-size: clamp(1rem, 3vw, 1.25rem);
   font-weight: 600;
   line-height: 1.3;
-  color: #F8FAFC;
-  
+  color: #f8fafc;
+
   @media (max-width: 768px) {
     font-size: 1.125rem;
   }
@@ -403,8 +274,8 @@ const TeamBadge = styled.span`
   font-size: clamp(0.625rem, 1.5vw, 0.75rem);
   font-weight: 600;
   flex-shrink: 0;
-  background: ${props => props.bgColor || 'rgba(75, 85, 99, 0.4)'};
-  color: ${props => props.textColor || '#F8FAFC'};
+  background: ${(props) => props.bgColor || "rgba(75, 85, 99, 0.4)"};
+  color: ${(props) => props.textColor || "#F8FAFC"};
   box-shadow: 0 0 25px -10px rgba(255, 255, 255, 0.8);
 `;
 
@@ -444,7 +315,7 @@ const MetricValue = styled.p`
   margin-top: 0.25rem;
   font-size: clamp(0.875rem, 2vw, 1rem);
   font-weight: 600;
-  color: #E0F2FE;
+  color: #e0f2fe;
 `;
 
 const CardDescription = styled.p`
@@ -459,7 +330,12 @@ const DetailPanel = styled.section`
   margin-top: clamp(1.5rem, 3vw, 2rem);
   border-radius: 1.5rem;
   border: 1px solid rgba(19, 38, 58, 0.7);
-  background: linear-gradient(to bottom right, rgba(6, 22, 38, 0.95), rgba(6, 27, 35, 0.92), rgba(5, 20, 31, 0.95));
+  background: linear-gradient(
+    to bottom right,
+    rgba(6, 22, 38, 0.95),
+    rgba(6, 27, 35, 0.92),
+    rgba(5, 20, 31, 0.95)
+  );
   padding: clamp(1rem, 3vw, 1.5rem);
   box-shadow: 0 32px 90px -45px rgba(8, 47, 73, 0.8);
 
@@ -538,7 +414,7 @@ const StatBoxLabel = styled.p`
   text-transform: uppercase;
   letter-spacing: 0.1em;
   font-size: clamp(0.625rem, 1.5vw, 0.75rem);
-  color: #94A3B8;
+  color: #94a3b8;
 `;
 
 const StatBoxValue = styled.p`
@@ -552,7 +428,7 @@ const MainContent = styled.section`
   margin-top: clamp(2rem, 4vw, 3.5rem);
   display: grid;
   gap: clamp(1.5rem, 3vw, 2rem);
-  
+
   @media (min-width: 1280px) {
     grid-template-columns: 1.2fr 0.8fr;
   }
@@ -619,25 +495,25 @@ const Table = styled.table`
   border-collapse: separate;
   border-spacing: 0 0.5rem;
   font-size: clamp(0.75rem, 2vw, 0.875rem);
-  color: #E2E8F0;
+  color: #e2e8f0;
 `;
 
 const THead = styled.thead`
   text-transform: uppercase;
   letter-spacing: 0.1em;
   font-size: clamp(0.625rem, 1.5vw, 0.75rem);
-  color: #64748B;
+  color: #64748b;
 `;
 
 const Th = styled.th`
   padding: clamp(0.5rem, 2vw, 0.75rem) clamp(0.75rem, 2vw, 1rem);
   text-align: left;
   font-weight: 500;
-  
+
   &:first-child {
     border-radius: 0.5rem 0 0 0.5rem;
   }
-  
+
   &:last-child {
     border-radius: 0 0.5rem 0.5rem 0;
   }
@@ -649,7 +525,7 @@ const Tr = styled.tr`
   background: rgba(11, 24, 36, 0.85);
   transition: all 0.3s;
   cursor: pointer;
-  
+
   &:hover {
     transform: translateY(-2px);
     background: rgba(16, 35, 56, 0.9);
@@ -658,11 +534,11 @@ const Tr = styled.tr`
 
 const Td = styled.td`
   padding: clamp(0.5rem, 2vw, 0.75rem) clamp(0.75rem, 2vw, 1rem);
-  
+
   &:first-child {
     border-radius: 0.5rem 0 0 0.5rem;
   }
-  
+
   &:last-child {
     border-radius: 0 0.5rem 0.5rem 0;
   }
@@ -680,7 +556,7 @@ const PlayerName = styled.span`
 
 const StatValue = styled.span`
   font-weight: 600;
-  color: ${props => props.color || '#FACC15'};
+  color: ${(props) => props.color || "#FACC15"};
 `;
 
 const SidePanel = styled.div`
@@ -699,44 +575,48 @@ const EmptyState = styled.div`
   padding: clamp(2rem, 5vw, 3rem);
   text-align: center;
   color: rgba(203, 213, 245, 0.6);
-  
+
   svg {
     width: clamp(3rem, 8vw, 4rem);
     height: clamp(3rem, 8vw, 4rem);
     margin-bottom: 1rem;
     opacity: 0.5;
   }
-  
+
   p {
     font-size: clamp(0.875rem, 2vw, 1rem);
   }
 `;
 
-// ========== PALETAS DE TIMES ==========
+// ========== PALETAS DE TIMES (sem alterações) ==========
 const teamPalettes = {
   "Time Amarelo": {
-    badge: "linear-gradient(to right, rgba(250, 204, 21, 0.2), rgba(161, 98, 7, 0.4), rgba(251, 191, 36, 0.2))",
+    badge:
+      "linear-gradient(to right, rgba(250, 204, 21, 0.2), rgba(161, 98, 7, 0.4), rgba(251, 191, 36, 0.2))",
     textColor: "#FDF6D8",
     borderColor: "rgba(250, 204, 21, 0.45)",
     gradient: "rgba(250, 204, 21, 0.35)",
     shadowColor: "rgba(250, 204, 21, 0.6)",
   },
   "Time Preto": {
-    badge: "linear-gradient(to right, rgba(75, 85, 99, 0.4), rgba(17, 24, 39, 0.7), rgba(156, 163, 175, 0.4))",
+    badge:
+      "linear-gradient(to right, rgba(75, 85, 99, 0.4), rgba(17, 24, 39, 0.7), rgba(156, 163, 175, 0.4))",
     textColor: "#F8FAFC",
     borderColor: "rgba(75, 85, 99, 0.55)",
     gradient: "rgba(107, 114, 128, 0.3)",
     shadowColor: "rgba(107, 114, 128, 0.55)",
   },
   "Time Azul": {
-    badge: "linear-gradient(to right, rgba(14, 165, 233, 0.35), rgba(29, 78, 216, 0.45), rgba(56, 189, 248, 0.35))",
+    badge:
+      "linear-gradient(to right, rgba(14, 165, 233, 0.35), rgba(29, 78, 216, 0.45), rgba(56, 189, 248, 0.35))",
     textColor: "#E0F2FE",
     borderColor: "rgba(56, 189, 248, 0.45)",
     gradient: "rgba(14, 165, 233, 0.35)",
     shadowColor: "rgba(14, 165, 233, 0.55)",
   },
   "Time Rosa": {
-    badge: "linear-gradient(to right, rgba(251, 113, 133, 0.35), rgba(190, 24, 93, 0.45), rgba(244, 114, 182, 0.3))",
+    badge:
+      "linear-gradient(to right, rgba(251, 113, 133, 0.35), rgba(190, 24, 93, 0.45), rgba(244, 114, 182, 0.3))",
     textColor: "#FCE7F3",
     borderColor: "rgba(244, 114, 182, 0.5)",
     gradient: "rgba(251, 113, 133, 0.35)",
@@ -748,118 +628,199 @@ const getTeamPalette = (teamName) => {
   return teamPalettes[teamName] || teamPalettes["Time Preto"];
 };
 
-// ========== COMPONENTE PRINCIPAL ==========
+
+const formatarDataRodada = (dataString) => {
+  if (!dataString) {
+    return "Data inválida";
+  }
+
+  let dataParaProcessar = dataString;
+
+  if (typeof dataString === 'string' && dataString.endsWith('.0')) {
+    dataParaProcessar = dataString.slice(0, -2); 
+  }
+
+  const timestamp = parseInt(dataParaProcessar, 10);
+
+  let data;
+  if (!isNaN(timestamp) && timestamp > 0) { 
+    data = new Date(timestamp);
+  } else {
+    data = new Date(dataString.replace(' ', 'T'));
+  }
+  
+  if (isNaN(data.getTime())) {
+    console.warn("Formato de data não reconhecido após tentativas:", dataString);
+    return "Data não reconhecida";
+  }
+  
+  return data.toLocaleDateString('pt-BR', { timeZone: 'UTC' });
+};
+
+// ========== COMPONENTE PRINCIPAL (VERSÃO CORRIGIDA) ==========
 const ResultadoRodadaPage = () => {
+  const { ligaId } = useParams();
   const [players, setPlayers] = useState([]);
-  const [ligas, setLigas] = useState([]);
-  const [selectedLigaId, setSelectedLigaId] = useState("");
+  const [rodadas, setRodadas] = useState([]);
+  const [selectedRodadaId, setSelectedRodadaId] = useState("");
   const [selectedPlayer, setSelectedPlayer] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [activeHighlight, setActiveHighlight] = useState(0);
 
   useEffect(() => {
-    const fetchData = async () => {
+    const fetchRodadas = async () => {
+      if (!ligaId) return;
       setLoading(true);
       try {
-        const [statsData, ligasData] = await Promise.all([
-          getEstatisticas(selectedLigaId || null),
-          getLigas()
-        ]);
-        setPlayers(statsData);
-        setLigas(ligasData);
+        const rodadasData = await getRodadasPorLiga(ligaId);
+        const sortedRodadas = rodadasData.sort(
+          (a, b) => new Date(b.data) - new Date(a.data)
+        );
+        setRodadas(sortedRodadas);
+        if (sortedRodadas.length > 0) {
+          setSelectedRodadaId(sortedRodadas[0].id);
+        } else {
+          setPlayers([]);
+          setLoading(false);
+        }
       } catch (error) {
-        console.error("Erro ao carregar estatísticas:", error);
+        console.error("Erro ao carregar rodadas:", error);
+        setLoading(false);
+      }
+    };
+    fetchRodadas();
+  }, [ligaId]);
+
+  useEffect(() => {
+    const fetchEstatisticas = async () => {
+      if (!selectedRodadaId) {
+        if (rodadas.length === 0) {
+          setPlayers([]);
+          setLoading(false);
+        }
+        return;
+      }
+
+      setLoading(true);
+      try {
+        const statsData = await getResultadosDaRodada(selectedRodadaId);
+         console.log("Dados de estatísticas recebidos (com time):", statsData);
+        setPlayers(statsData);
+      } catch (error) {
+        console.error(
+          `Erro ao carregar estatísticas da rodada ${selectedRodadaId}:`,
+          error
+        );
+        setPlayers([]); 
       } finally {
         setLoading(false);
       }
     };
-    fetchData();
-  }, [selectedLigaId]);
+    fetchEstatisticas();
+  }, [selectedRodadaId]);
 
-  // Cálculos dos destaques
-  const mvp = useMemo(() => {
-    if (players.length === 0) return null;
-    return players.reduce((best, current) =>
-      (current.eficiencia || 0) > (best.eficiencia || 0) ? current : best
-    );
-  }, [players]);
+  const { mvp, topScorer, topPlaymaker, worstPlayer } = useMemo(() => {
+    if (!players || players.length === 0) {
+      return {
+        mvp: null,
+        topScorer: null,
+        topPlaymaker: null,
+        worstPlayer: null,
+      };
+    }
 
-  const topScorer = useMemo(() => {
-    if (players.length === 0) return null;
-    return players.reduce((best, current) =>
-      (current.gols || 0) > (best.gols || 0) ? current : best
+    const best = players.reduce((b, c) =>
+      (c.total_pontos || 0) > (b.total_pontos || 0) ? c : b
     );
-  }, [players]);
+    const scorer = players.reduce((b, c) =>
+      (c.gols || 0) > (b.gols || 0) ? c : b
+    );
+    const playmaker = players.reduce((b, c) =>
+      (c.assistencias || 0) > (b.assistencias || 0) ? c : b
+    );
 
-  const topPlaymaker = useMemo(() => {
-    if (players.length === 0) return null;
-    return players.reduce((best, current) =>
-      (current.assistencias || 0) > (best.assistencias || 0) ? current : best
-    );
-  }, [players]);
+    const otherPlayers = players.filter((p) => p.id !== best?.id);
+    let worst = null;
+    if (otherPlayers.length > 0) {
+      worst = otherPlayers.reduce(
+        (w, c) => ((c.total_pontos || 0) < (w.total_pontos || 0) ? c : w),
+        otherPlayers[0]
+      );
+    } else if (players.length > 0) {
+      worst = players[0]; 
+    }
 
-  const worstPlayer = useMemo(() => {
-    if (players.length === 0) return null;
-    return players.reduce((worst, current) =>
-      (current.eficiencia || 0) < (worst.eficiencia || 0) ? current : worst
-    );
+    return {
+      mvp: best,
+      topScorer: scorer,
+      topPlaymaker: playmaker,
+      worstPlayer: worst,
+    };
   }, [players]);
 
   const highlightCards = useMemo(() => {
     if (!mvp || !topScorer || !topPlaymaker || !worstPlayer) return [];
-    
+
     return [
       {
-        title: "MVP da temporada",
-        badge: "MVP",
+        title: "MVP da Rodada",
         player: mvp,
         primaryValue: `${mvp.total_pontos || 0} pts`,
-        metricLabel: "Índice de impacto",
-        metricValue: (mvp.eficiencia || 0).toFixed(1),
-        description: `Líder absoluto com ${mvp.gols || 0} gols e ${mvp.assistencias || 0} assistências.`,
+        metricLabel: "Gols/Assist.",
+        metricValue: `${mvp.gols || 0}/${mvp.assistencias || 0}`,
+        description: `Líder absoluto com ${mvp.gols || 0} gols e ${
+          mvp.assistencias || 0
+        } assistências.`,
       },
       {
         title: "Maior artilheiro",
-        badge: "Goleador",
         player: topScorer,
         primaryValue: `${topScorer.gols || 0} gols`,
         metricLabel: "Assistências",
         metricValue: (topScorer.assistencias || 0).toString(),
-        description: `Artilheiro implacável com ${topScorer.gols || 0} bolas na rede.`,
+        description: `Artilheiro implacável com ${
+          topScorer.gols || 0
+        } bolas na rede.`,
       },
       {
         title: "Maior armador",
-        badge: "Maestro",
         player: topPlaymaker,
-        primaryValue: `${topPlaymaker.assistencias || 0} assistências`,
+        primaryValue: `${topPlaymaker.assistencias || 0} assist.`,
         metricLabel: "Pontuação",
         metricValue: (topPlaymaker.total_pontos || 0).toString(),
-        description: `Criador de jogadas com ${topPlaymaker.assistencias || 0} passes decisivos.`,
+        description: `Criador de jogadas com ${
+          topPlaymaker.assistencias || 0
+        } passes decisivos.`,
       },
       {
         title: "Pé de rato",
-        badge: "Em ajustes",
         player: worstPlayer,
-        primaryValue: `${(worstPlayer.eficiencia || 0).toFixed(1)} de eficiência`,
-        metricLabel: "Pontuação",
-        metricValue: (worstPlayer.total_pontos || 0).toString(),
+        primaryValue: `${(worstPlayer.total_pontos || 0).toFixed(1)} pts`,
+        metricLabel: "Gols/Assist.",
+        metricValue: `${worstPlayer.gols || 0}/${
+          worstPlayer.assistencias || 0
+        }`,
         description: `Precisa melhorar o desempenho nas próximas rodadas.`,
       },
     ];
   }, [mvp, topScorer, topPlaymaker, worstPlayer]);
 
   const pointsRanking = useMemo(() => {
+    if (!players) return [];
     return [...players]
       .sort((a, b) => (b.total_pontos || 0) - (a.total_pontos || 0))
       .slice(0, 7);
   }, [players]);
 
   const scorersRanking = useMemo(() => {
+    if (!players) return [];
     return [...players]
       .sort((a, b) => (b.gols || 0) - (a.gols || 0))
       .slice(0, 3);
   }, [players]);
 
   const playmakersRanking = useMemo(() => {
+    if (!players) return [];
     return [...players]
       .sort((a, b) => (b.assistencias || 0) - (a.assistencias || 0))
       .slice(0, 3);
@@ -868,10 +829,10 @@ const ResultadoRodadaPage = () => {
   useEffect(() => {
     if (pointsRanking.length > 0) {
       setSelectedPlayer(pointsRanking[0]);
+    } else {
+      setSelectedPlayer(null); 
     }
   }, [pointsRanking]);
-
-  const [activeHighlight, setActiveHighlight] = useState(0);
 
   if (loading) {
     return (
@@ -887,26 +848,11 @@ const ResultadoRodadaPage = () => {
     );
   }
 
-  if (players.length === 0) {
-    return (
-      <PageContainer>
-        <BackgroundGradients />
-        <OverlayGradient />
-        <ContentWrapper>
-          <Header>
-            <Subtitle>Estatísticas da Liga</Subtitle>
-            <Title>Nenhum dado disponível</Title>
-            <Description>
-              Não há estatísticas para exibir. Complete algumas rodadas primeiro!
-            </Description>
-          </Header>
-        </ContentWrapper>
-      </PageContainer>
-    );
-  }
-
   return (
     <PageContainer>
+      {/* ADICIONA O BOTÃO AQUI */}
+      <HomeButton to="/">Voltar ao Início</HomeButton>
+
       <BackgroundGradients />
       <OverlayGradient />
       <ContentWrapper>
@@ -916,320 +862,285 @@ const ResultadoRodadaPage = () => {
             Radar completo: quem decidiu e quais craques dominaram o gramado
           </Title>
           <Description>
-            Explore os destaques, rankings completos e o desempenho individual dos jogadores em um ambiente inspirado na noite iluminada do estádio.
+            Explore os destaques, rankings e o desempenho individual dos
+            jogadores.
           </Description>
         </Header>
 
         <FilterSection>
-          <FilterLabel htmlFor="liga-filter">Filtrar por Liga:</FilterLabel>
+          <FilterLabel htmlFor="rodada-filter">Filtrar por Rodada:</FilterLabel>
           <FilterSelect
-            id="liga-filter"
-            value={selectedLigaId}
-            onChange={(e) => setSelectedLigaId(e.target.value)}
+            id="rodada-filter"
+            value={selectedRodadaId}
+            onChange={(e) => setSelectedRodadaId(e.target.value)}
+            disabled={rodadas.length === 0}
           >
-            <option value="">Todas as Ligas</option>
-            {ligas.map((liga) => (
-              <option key={liga.id} value={liga.id}>
-                {liga.nome}
-              </option>
-            ))}
+            {rodadas.length > 0 ? (
+              rodadas.map((rodada) => (
+                <option key={rodada.id} value={rodada.id}>
+                  Rodada de {formatarDataRodada(rodada.data)}
+                </option>
+              ))
+            ) : (
+              <option>Nenhuma rodada encontrada</option>
+            )}
           </FilterSelect>
         </FilterSection>
 
-        <HighlightGrid>
-          {highlightCards.map((highlight, index) => {
-            const palette = getTeamPalette(highlight.player.time || "Time Preto");
-            const isActive = activeHighlight === index;
-
-            return (
-              <HighlightCard
-                key={index}
-                borderColor={palette.borderColor}
-                shadowColor={palette.shadowColor}
-                active={isActive}
-                onMouseEnter={() => setActiveHighlight(index)}
-                onClick={() => setActiveHighlight(index)}
-                tabIndex={0}
-              >
-                <CardGradient gradient={palette.gradient} active={isActive} />
-                
-                <CardHeader>
-                  <CardHeaderText>
-                    <CardSubtitle>{highlight.title}</CardSubtitle>
-                    <CardTitle>{highlight.player.nome}</CardTitle>
-                    <CardPosition>{highlight.player.posicao || 'Jogador'}</CardPosition>
-                  </CardHeaderText>
-                  <TeamBadge
-                    bgColor={palette.badge}
-                    textColor={palette.textColor}
+        {!players || players.length === 0 ? (
+          <EmptyState>
+            <p>
+              Não há estatísticas para exibir nesta rodada. Finalize a rodada
+              para ver os dados.
+            </p>
+          </EmptyState>
+        ) : (
+          <>
+            <HighlightGrid>
+              {highlightCards.map((highlight, index) => {
+                const palette = getTeamPalette(
+                  highlight.player.time || "Time Preto"
+                );
+                return (
+                  <HighlightCard
+                    key={index}
+                    borderColor={palette.borderColor}
+                    shadowColor={palette.shadowColor}
+                    active={activeHighlight === index}
+                    onMouseEnter={() => setActiveHighlight(index)}
+                    onClick={() => setActiveHighlight(index)}
+                    tabIndex={0}
                   >
-                    {highlight.player.time ? highlight.player.time.replace('Time ', '') : 'N/A'}
-                  </TeamBadge>
-                </CardHeader>
-
-                <CardStats>
-                  <PrimaryValue>{highlight.primaryValue}</PrimaryValue>
-                  <div>
-                    <MetricLabel>{highlight.metricLabel}</MetricLabel>
-                    <MetricValue>{highlight.metricValue}</MetricValue>
-                  </div>
-                </CardStats>
-
-                <CardDescription>{highlight.description}</CardDescription>
-              </HighlightCard>
-            );
-          })}
-        </HighlightGrid>
-
-        {selectedPlayer && (
-          <DetailPanel>
-            <DetailHeader>
-              <div>
-                <DetailBadge>Destaque selecionado</DetailBadge>
-                <DetailTitle>
-                  {selectedPlayer.nome} — {selectedPlayer.time || 'Sem Time'}
-                </DetailTitle>
-                <DetailSubtitle>
-                  {selectedPlayer.posicao || 'Jogador de campo com desempenho consistente'}
-                </DetailSubtitle>
-              </div>
-              <DetailStats>
-                <StatBox>
-                  <StatBoxLabel>Equipe</StatBoxLabel>
-                  <StatBoxValue>{selectedPlayer.time || 'N/A'}</StatBoxValue>
-                </StatBox>
-                <StatBox>
-                  <StatBoxLabel>Pontuação</StatBoxLabel>
-                  <StatBoxValue>{selectedPlayer.total_pontos || 0}</StatBoxValue>
-                </StatBox>
-                <StatBox>
-                  <StatBoxLabel>G+A</StatBoxLabel>
-                  <StatBoxValue>
-                    {selectedPlayer.gols || 0} / {selectedPlayer.assistencias || 0}
-                  </StatBoxValue>
-                </StatBox>
-              </DetailStats>
-            </DetailHeader>
-          </DetailPanel>
-        )}
-
-        <MainContent>
-          <RankingPanel>
-            <RankingHeader>
-              <div>
-                <RankingTitle>Top 7 por pontuação</RankingTitle>
-                <RankingSubtitle>
-                  Ranking completo que pondera impacto, gols e assistências acumuladas.
-                </RankingSubtitle>
-              </div>
-              <RankingBadge>Elite da temporada</RankingBadge>
-            </RankingHeader>
-            
-            <TableWrapper>
-              <Table>
-                <THead>
-                  <tr>
-                    <Th>#</Th>
-                    <Th>Jogador</Th>
-                    <Th>Time</Th>
-                    <Th>Pts</Th>
-                    <Th>Gols</Th>
-                    <Th>Assist.</Th>
-                  </tr>
-                </THead>
-                <TBody>
-                  {pointsRanking.map((player, index) => {
-                    const palette = getTeamPalette(player.time || "Time Preto");
-                    
-                    return (
-                      <Tr
-                        key={player.id}
-                        onMouseEnter={() => setSelectedPlayer(player)}
-                        onClick={() => setSelectedPlayer(player)}
+                    <CardGradient
+                      gradient={palette.gradient}
+                      active={activeHighlight === index}
+                    />
+                    <CardHeader>
+                      <CardHeaderText>
+                        <CardSubtitle>{highlight.title}</CardSubtitle>
+                        <CardTitle>{highlight.player.nome}</CardTitle>
+                        <CardPosition>
+                          {highlight.player.posicao || "Jogador"}
+                        </CardPosition>
+                      </CardHeaderText>
+                      <TeamBadge
+                        bgColor={palette.badge}
+                        textColor={palette.textColor}
                       >
-                        <Td>
-                          <RankNumber>{index + 1}</RankNumber>
-                        </Td>
-                        <Td>
-                          <PlayerName>{player.nome}</PlayerName>
-                        </Td>
-                        <Td>
-                          <TeamBadge
-                            bgColor={palette.badge}
-                            textColor={palette.textColor}
+                        {highlight.player.time
+                          ? highlight.player.time.replace("Time ", "")
+                          : "N/A"}
+                      </TeamBadge>
+                    </CardHeader>
+                    <CardStats>
+                      <PrimaryValue>{highlight.primaryValue}</PrimaryValue>
+                      <div>
+                        <MetricLabel>{highlight.metricLabel}</MetricLabel>
+                        <MetricValue>{highlight.metricValue}</MetricValue>
+                      </div>
+                    </CardStats>
+                    <CardDescription>{highlight.description}</CardDescription>
+                  </HighlightCard>
+                );
+              })}
+            </HighlightGrid>
+
+            {selectedPlayer && (
+              <DetailPanel>
+                <DetailHeader>
+                  <div>
+                    <DetailBadge>Destaque selecionado</DetailBadge>
+                    <DetailTitle>
+                      {selectedPlayer.nome} —{" "}
+                      {selectedPlayer.time || "Sem Time"}
+                    </DetailTitle>
+                    <DetailSubtitle>
+                      {selectedPlayer.posicao ||
+                        "Jogador de campo com desempenho consistente"}
+                    </DetailSubtitle>
+                  </div>
+                  <DetailStats>
+                    <StatBox>
+                      <StatBoxLabel>Equipe</StatBoxLabel>
+                      <StatBoxValue>
+                        {selectedPlayer.time || "N/A"}
+                      </StatBoxValue>
+                    </StatBox>
+                    <StatBox>
+                      <StatBoxLabel>Pontuação</StatBoxLabel>
+                      <StatBoxValue>
+                        {selectedPlayer.total_pontos || 0}
+                      </StatBoxValue>
+                    </StatBox>
+                    <StatBox>
+                      <StatBoxLabel>G+A</StatBoxLabel>
+                      <StatBoxValue>
+                        {selectedPlayer.gols || 0} /{" "}
+                        {selectedPlayer.assistencias || 0}
+                      </StatBoxValue>
+                    </StatBox>
+                  </DetailStats>
+                </DetailHeader>
+              </DetailPanel>
+            )}
+
+            <MainContent>
+              <RankingPanel>
+                <RankingHeader>
+                  <div>
+                    <RankingTitle>Top 7 por pontuação</RankingTitle>
+                    <RankingSubtitle>
+                      Ranking completo que pondera impacto, gols e assistências.
+                    </RankingSubtitle>
+                  </div>
+                  <RankingBadge>Elite da Rodada</RankingBadge>
+                </RankingHeader>
+                <TableWrapper>
+                  <Table>
+                    <THead>
+                      <tr>
+                        <Th>#</Th>
+                        <Th>Jogador</Th>
+                        <Th>Time</Th>
+                        <Th>Pts</Th>
+                        <Th>Gols</Th>
+                        <Th>Assist.</Th>
+                      </tr>
+                    </THead>
+                    <TBody>
+                      {pointsRanking.map((player, index) => {
+                        const palette = getTeamPalette(
+                          player.time || "Time Preto"
+                        );
+                        return (
+                          <Tr
+                            key={player.id}
+                            onMouseEnter={() => setSelectedPlayer(player)}
+                            onClick={() => setSelectedPlayer(player)}
                           >
-                            {player.time ? player.time.replace('Time ', '') : 'N/A'}
-                          </TeamBadge>
-                        </Td>
-                        <Td>
-                          <StatValue color="#FACC15">{player.total_pontos || 0}</StatValue>
-                        </Td>
-                        <Td>
-                          <StatValue color="#22D3EE">{player.gols || 0}</StatValue>
-                        </Td>
-                        <Td>
-                          <StatValue color="#A855F7">{player.assistencias || 0}</StatValue>
-                        </Td>
-                      </Tr>
-                    );
-                  })}
-                </TBody>
-              </Table>
-            </TableWrapper>
+                            <Td>
+                              <RankNumber>{index + 1}</RankNumber>
+                            </Td>
+                            <Td>
+                              <PlayerName>{player.nome}</PlayerName>
+                            </Td>
+                            <Td>
+                              <TeamBadge
+                                bgColor={palette.badge}
+                                textColor={palette.textColor}
+                              >
+                                {player.time
+                                  ? player.time.replace("Time ", "")
+                                  : "N/A"}
+                              </TeamBadge>
+                            </Td>
+                            <Td>
+                              <StatValue color="#FACC15">
+                                {player.total_pontos || 0}
+                              </StatValue>
+                            </Td>
+                            <Td>
+                              <StatValue color="#22D3EE">
+                                {player.gols || 0}
+                              </StatValue>
+                            </Td>
+                            <Td>
+                              <StatValue color="#A855F7">
+                                {player.assistencias || 0}
+                              </StatValue>
+                            </Td>
+                          </Tr>
+                        );
+                      })}
+                    </TBody>
+                  </Table>
+                </TableWrapper>
+              </RankingPanel>
 
-            <DetailPanel style={{ marginTop: '1.5rem' }}>
-              <DetailHeader>
-                <div>
-                  <DetailBadge>Jogador focado</DetailBadge>
-                  <DetailTitle>
-                    {selectedPlayer?.nome} — {selectedPlayer?.time || 'Sem Time'}
-                  </DetailTitle>
-                  <DetailSubtitle>
-                    Desempenho detalhado do jogador selecionado
-                  </DetailSubtitle>
-                </div>
-                <DetailStats>
-                  <StatBox>
-                    <StatBoxLabel>Pts</StatBoxLabel>
-                    <StatBoxValue>{selectedPlayer?.total_pontos || 0}</StatBoxValue>
-                  </StatBox>
-                  <StatBox>
-                    <StatBoxLabel>Gols</StatBoxLabel>
-                    <StatBoxValue>{selectedPlayer?.gols || 0}</StatBoxValue>
-                  </StatBox>
-                  <StatBox>
-                    <StatBoxLabel>Assist.</StatBoxLabel>
-                    <StatBoxValue>{selectedPlayer?.assistencias || 0}</StatBoxValue>
-                  </StatBox>
-                  <StatBox>
-                    <StatBoxLabel>Eficiência</StatBoxLabel>
-                    <StatBoxValue>{(selectedPlayer?.eficiencia || 0).toFixed(1)}</StatBoxValue>
-                  </StatBox>
-                </DetailStats>
-              </DetailHeader>
-            </DetailPanel>
-          </RankingPanel>
+              <SidePanel>
+                <SmallRankingPanel>
+                  <RankingHeader>
+                    <div>
+                      <RankingTitle>Top 3 artilheiros</RankingTitle>
+                    </div>
+                  </RankingHeader>
+                  <TableWrapper>
+                    <Table>
+                      <THead>
+                        <tr>
+                          <Th>#</Th>
+                          <Th>Jogador</Th>
+                          <Th>Gols</Th>
+                        </tr>
+                      </THead>
+                      <TBody>
+                        {scorersRanking.map((player, index) => (
+                          <Tr
+                            key={player.id}
+                            onMouseEnter={() => setSelectedPlayer(player)}
+                            onClick={() => setSelectedPlayer(player)}
+                          >
+                            <Td>
+                              <RankNumber>{index + 1}</RankNumber>
+                            </Td>
+                            <Td>
+                              <PlayerName>{player.nome}</PlayerName>
+                            </Td>
+                            <Td>
+                              <StatValue color="#FACC15">
+                                {player.gols || 0}
+                              </StatValue>
+                            </Td>
+                          </Tr>
+                        ))}
+                      </TBody>
+                    </Table>
+                  </TableWrapper>
+                </SmallRankingPanel>
 
-          <SidePanel>
-            <SmallRankingPanel>
-              <RankingHeader>
-                <div>
-                  <RankingTitle>Top 3 artilheiros</RankingTitle>
-                  <RankingSubtitle>
-                    Quem mais balançou as redes nesta temporada.
-                  </RankingSubtitle>
-                </div>
-              </RankingHeader>
-              
-              <TableWrapper>
-                <Table>
-                  <THead>
-                    <tr>
-                      <Th>#</Th>
-                      <Th>Jogador</Th>
-                      <Th>Time</Th>
-                      <Th>Gols</Th>
-                      <Th>Assist.</Th>
-                    </tr>
-                  </THead>
-                  <TBody>
-                    {scorersRanking.map((player, index) => {
-                      const palette = getTeamPalette(player.time || "Time Preto");
-                      
-                      return (
-                        <Tr
-                          key={player.id}
-                          onMouseEnter={() => setSelectedPlayer(player)}
-                          onClick={() => setSelectedPlayer(player)}
-                        >
-                          <Td>
-                            <RankNumber>{index + 1}</RankNumber>
-                          </Td>
-                          <Td>
-                            <PlayerName>{player.nome}</PlayerName>
-                          </Td>
-                          <Td>
-                            <TeamBadge
-                              bgColor={palette.badge}
-                              textColor={palette.textColor}
-                            >
-                              {player.time ? player.time.replace('Time ', '') : 'N/A'}
-                            </TeamBadge>
-                          </Td>
-                          <Td>
-                            <StatValue color="#FACC15">{player.gols || 0}</StatValue>
-                          </Td>
-                          <Td>
-                            <StatValue color="#A855F7">{player.assistencias || 0}</StatValue>
-                          </Td>
-                        </Tr>
-                      );
-                    })}
-                  </TBody>
-                </Table>
-              </TableWrapper>
-            </SmallRankingPanel>
-
-            <SmallRankingPanel>
-              <RankingHeader>
-                <div>
-                  <RankingTitle>Top 3 armadores</RankingTitle>
-                  <RankingSubtitle>
-                    Quem mais arquitetou finalizações claras.
-                  </RankingSubtitle>
-                </div>
-              </RankingHeader>
-              
-              <TableWrapper>
-                <Table>
-                  <THead>
-                    <tr>
-                      <Th>#</Th>
-                      <Th>Jogador</Th>
-                      <Th>Time</Th>
-                      <Th>Assist.</Th>
-                      <Th>Pts</Th>
-                    </tr>
-                  </THead>
-                  <TBody>
-                    {playmakersRanking.map((player, index) => {
-                      const palette = getTeamPalette(player.time || "Time Preto");
-                      
-                      return (
-                        <Tr
-                          key={player.id}
-                          onMouseEnter={() => setSelectedPlayer(player)}
-                          onClick={() => setSelectedPlayer(player)}
-                        >
-                          <Td>
-                            <RankNumber>{index + 1}</RankNumber>
-                          </Td>
-                          <Td>
-                            <PlayerName>{player.nome}</PlayerName>
-                          </Td>
-                          <Td>
-                            <TeamBadge
-                              bgColor={palette.badge}
-                              textColor={palette.textColor}
-                            >
-                              {player.time ? player.time.replace('Time ', '') : 'N/A'}
-                            </TeamBadge>
-                          </Td>
-                          <Td>
-                            <StatValue color="#38BDF8">{player.assistencias || 0}</StatValue>
-                          </Td>
-                          <Td>
-                            <StatValue color="#FACC15">{player.total_pontos || 0}</StatValue>
-                          </Td>
-                        </Tr>
-                      );
-                    })}
-                  </TBody>
-                </Table>
-              </TableWrapper>
-            </SmallRankingPanel>
-          </SidePanel>
-        </MainContent>
+                <SmallRankingPanel>
+                  <RankingHeader>
+                    <div>
+                      <RankingTitle>Top 3 armadores</RankingTitle>
+                    </div>
+                  </RankingHeader>
+                  <TableWrapper>
+                    <Table>
+                      <THead>
+                        <tr>
+                          <Th>#</Th>
+                          <Th>Jogador</Th>
+                          <Th>Assist.</Th>
+                        </tr>
+                      </THead>
+                      <TBody>
+                        {playmakersRanking.map((player, index) => (
+                          <Tr
+                            key={player.id}
+                            onMouseEnter={() => setSelectedPlayer(player)}
+                            onClick={() => setSelectedPlayer(player)}
+                          >
+                            <Td>
+                              <RankNumber>{index + 1}</RankNumber>
+                            </Td>
+                            <Td>
+                              <PlayerName>{player.nome}</PlayerName>
+                            </Td>
+                            <Td>
+                              <StatValue color="#38BDF8">
+                                {player.assistencias || 0}
+                              </StatValue>
+                            </Td>
+                          </Tr>
+                        ))}
+                      </TBody>
+                    </Table>
+                  </TableWrapper>
+                </SmallRankingPanel>
+              </SidePanel>
+            </MainContent>
+          </>
+        )}
       </ContentWrapper>
     </PageContainer>
   );

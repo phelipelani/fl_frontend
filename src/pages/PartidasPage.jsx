@@ -223,6 +223,7 @@ const EventHistory = styled.div`
 `;
 
 const JogadoresContainer = styled.div`
+   
   display: flex;
   justify-content: space-around;
   width: 100%;
@@ -231,6 +232,7 @@ const JogadoresContainer = styled.div`
   flex-grow: 1;
   min-height: 0;
   overflow: hidden;
+  height:15%;
 
   @media (max-width: 768px) {
     gap: ${(props) => props.theme.spacing.sm};
